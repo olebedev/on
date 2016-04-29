@@ -6,7 +6,8 @@ It watches the files and writes the event right into _stdout_. Pretty useful to 
 
 ### Usage
 
-Install: `go get github.com/olebedev/on`.
+Install: `go get github.com/olebedev/on` or compiled binaries at [releases](https://github.com/olebedev/on/releases) page.
+
 ```
 $ on --help
 NAME:
@@ -34,3 +35,6 @@ GLOBAL OPTIONS:
    --help, -h     show help
    --version, -v    print the version
 ```
+
+### License
+MIT
