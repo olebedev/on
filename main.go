@@ -19,7 +19,7 @@ func main() {
 
    Path could be mix of folders and filepaths, default is '.'.
    Regular usecase is watch the file's changes and execute some
-   bash script or command line tool. It could be done in whis way:
+   bash script or command line tool. It could be done in this way:
 
    on | xargs -n1 -I{} <program>`
 
