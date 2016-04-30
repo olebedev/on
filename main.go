@@ -83,13 +83,6 @@ func main() {
 	app.Run(os.Args)
 }
 
-var events = map[string]fsnotify.Op{
-	"create": fsnotify.Create,
-	"write":  fsnotify.Write,
-	"remove": fsnotify.Remove,
-	"rename": fsnotify.Rename,
-}
-
 func render(t *template.Template, e fsnotify.Event) string {
 	var doc bytes.Buffer
 	t.Execute(&doc, e)
