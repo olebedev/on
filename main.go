@@ -36,6 +36,10 @@ func main() {
 			Usage: "event's bitwise mask, see: https://godoc.org/gopkg.in/fsnotify.v1#Op",
 			Value: 15,
 		},
+		cli.BoolFlag{
+			Name:  "r",
+			Usage: "watch given paths recursively",
+		},
 	}
 	app.Action = func(c *cli.Context) {
 		t, err := template.New("output").Parse(c.String("template"))
@@ -72,7 +76,7 @@ func main() {
 		}
 
 		for _, arg := range args {
-			if err := addPath(watcher, arg); err != nil {
+			if err := addPath(watcher, arg, c.Bool("r")); err != nil {
 				fmt.Fprintln(os.Stderr, err)
 				os.Exit(1)
 			}
@@ -89,13 +93,13 @@ func render(t *template.Template, e fsnotify.Event) string {
 	return doc.String()
 }
 
-func addPath(w *fsnotify.Watcher, name string) error {
+func addPath(w *fsnotify.Watcher, name string, recursively bool) error {
 	f, err := os.Stat(name)
 	if err != nil {
 		return err
 	}
 
-	if !f.IsDir() {
+	if !f.IsDir() || !recursively {
 		return w.Add(name)
 	}
 
