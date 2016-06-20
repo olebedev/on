@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"text/template"
 
@@ -54,18 +55,21 @@ func main() {
 		}
 		defer watcher.Close()
 
-		done := make(chan struct{})
+		done := make(chan os.Signal)
+		signal.Notify(done, os.Interrupt)
 
 		go func() {
 			for {
 				select {
 				case event := <-watcher.Events:
 					// if bitwise mask covers the event
-					if event.Op&id == event.Op {
+					if event.Op&id == event.Op && event.Name != "" {
 						fmt.Println(render(t, event))
 					}
 				case err := <-watcher.Errors:
-					fmt.Fprintln(os.Stderr, err)
+					if err != nil {
+						fmt.Fprintln(os.Stderr, err)
+					}
 				}
 			}
 		}()
@@ -81,7 +85,9 @@ func main() {
 				os.Exit(1)
 			}
 		}
+
 		<-done
+		watcher.Close()
 	}
 
 	app.Run(os.Args)
@@ -90,6 +96,7 @@ func main() {
 func render(t *template.Template, e fsnotify.Event) string {
 	var doc bytes.Buffer
 	t.Execute(&doc, e)
+
 	return doc.String()
 }
 
