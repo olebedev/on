@@ -1,4 +1,4 @@
-module olebedev/on
+module github.com/olebedev/on
 
 go 1.13
 
